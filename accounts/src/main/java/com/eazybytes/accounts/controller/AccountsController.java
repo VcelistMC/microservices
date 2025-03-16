@@ -6,22 +6,26 @@ import com.eazybytes.accounts.dto.ResponseDTO;
 import com.eazybytes.accounts.entity.Customer;
 import com.eazybytes.accounts.mapper.CustomerMapper;
 import com.eazybytes.accounts.service.IAccountService;
+import com.eazybytes.accounts.validators.MobileNumber;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RestController
 @AllArgsConstructor
+@Validated
 public class AccountsController {
 
     private IAccountService accountService;
 
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO> createAccount(
-            @RequestBody CustomerDTO customerDto
+            @Valid @RequestBody CustomerDTO customerDto
     ) {
 
         accountService.createAccount(customerDto);
@@ -35,7 +39,7 @@ public class AccountsController {
 
     @GetMapping("/fetch")
     public ResponseEntity<CustomerDTO> fetchAccountDetails(
-            @RequestParam String mobileNumber
+            @MobileNumber @RequestParam String mobileNumber
     ){
         CustomerDTO details = accountService.fetchAccount(mobileNumber);
 
@@ -45,7 +49,7 @@ public class AccountsController {
 
     @PatchMapping("/update")
     public ResponseEntity<ResponseDTO> updateAccount(
-        @RequestBody CustomerDTO customerDTO
+        @Valid @RequestBody CustomerDTO customerDTO
     ){
         var isUpdated = accountService.updateAccount(customerDTO);
         if(isUpdated){
@@ -58,7 +62,7 @@ public class AccountsController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDTO> deleteAccount(
-        @RequestParam String mobileNumber
+        @MobileNumber @RequestParam String mobileNumber
     ){
         var isDeleted = accountService.deleteAccount(mobileNumber);
         if(isDeleted){
