@@ -2,11 +2,18 @@ package com.eazybytes.accounts.controller;
 
 import com.eazybytes.accounts.consts.AccountConstants;
 import com.eazybytes.accounts.dto.CustomerDTO;
+import com.eazybytes.accounts.dto.ErrorResponseDTO;
 import com.eazybytes.accounts.dto.ResponseDTO;
 import com.eazybytes.accounts.entity.Customer;
 import com.eazybytes.accounts.mapper.CustomerMapper;
 import com.eazybytes.accounts.service.IAccountService;
 import com.eazybytes.accounts.validators.MobileNumber;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(
+        name = "CRUD REST APIs for Eazybank",
+        description = "CRUD REST APIs for Eazybank to CREATE, UPDATE, DELETE, and FETCH account details"
+)
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RestController
 @AllArgsConstructor
@@ -23,6 +34,14 @@ public class AccountsController {
 
     private IAccountService accountService;
 
+    @Operation(
+            summary = "Create Account REST API",
+            description = "Create new account and customer inside easybank"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "HTTP CREATED"
+    )
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO> createAccount(
             @Valid @RequestBody CustomerDTO customerDto
@@ -37,6 +56,14 @@ public class AccountsController {
                 ));
     }
 
+    @Operation(
+            summary = "Fetch Account REST API",
+            description = "fetch account details inside easybank"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP OK"
+    )
     @GetMapping("/fetch")
     public ResponseEntity<CustomerDTO> fetchAccountDetails(
             @MobileNumber @RequestParam String mobileNumber
@@ -47,6 +74,29 @@ public class AccountsController {
                 .ok(details);
     }
 
+    @Operation(
+            summary = "Update Account REST API",
+            description = "update account details inside easybank"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP OK"
+            ),
+            @ApiResponse(
+                    responseCode = "417",
+                    description = "HTTP EXPECTATION FAILED"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP INTERNAL SERVER ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = ErrorResponseDTO.class
+                            )
+                    )
+            )
+    })
     @PatchMapping("/update")
     public ResponseEntity<ResponseDTO> updateAccount(
         @Valid @RequestBody CustomerDTO customerDTO
@@ -56,10 +106,28 @@ public class AccountsController {
             return ResponseEntity.ok(new ResponseDTO(AccountConstants.STATUS_200, AccountConstants.MESSAGE_200));
         }
         else{
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(AccountConstants.STATUS_500, AccountConstants.MESSAGE_500_UPDATE));
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseDTO(AccountConstants.STATUS_417, AccountConstants.MESSAGE_417_UPDATE));
         }
     }
 
+    @Operation(
+            summary = "Delete Account REST API",
+            description = "Delete account details inside easybank"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP OK"
+            ),
+            @ApiResponse(
+                    responseCode = "417",
+                    description = "HTTP EXPECTATION FAILED"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP INTERNAL SERVER ERROR"
+            )
+    })
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDTO> deleteAccount(
         @MobileNumber @RequestParam String mobileNumber
@@ -69,7 +137,7 @@ public class AccountsController {
             return ResponseEntity.ok(new ResponseDTO(AccountConstants.STATUS_200, AccountConstants.MESSAGE_200));
         }
         else{
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(AccountConstants.STATUS_500, AccountConstants.MESSAGE_500_UPDATE));
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseDTO(AccountConstants.STATUS_417, AccountConstants.MESSAGE_417_DELETE));
         }
     }
 }
