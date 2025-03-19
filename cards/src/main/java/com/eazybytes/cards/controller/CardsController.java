@@ -3,6 +3,7 @@ package com.eazybytes.cards.controller;
 
 import com.eazybytes.cards.constants.CardConstants;
 import com.eazybytes.cards.dto.CardDTO;
+import com.eazybytes.cards.dto.CardsContactInfoDTO;
 import com.eazybytes.cards.dto.ErrorResponseDTO;
 import com.eazybytes.cards.dto.ResponseDTO;
 import com.eazybytes.cards.service.ICardService;
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +31,13 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CardsController {
 
     private ICardService cardService;
+
+    @Autowired
+    private CardsContactInfoDTO cardsContactInfoDTO;
 
     @Operation(
             summary = "Create Card REST API",
@@ -152,5 +158,10 @@ public class CardsController {
         }else{
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseDTO(CardConstants.STATUS_417, CardConstants.MESSAGE_417_UPDATE));
         }
+    }
+
+    @GetMapping("/contact")
+    public ResponseEntity<CardsContactInfoDTO> contact(){
+        return ResponseEntity.ok(cardsContactInfoDTO);
     }
 }
