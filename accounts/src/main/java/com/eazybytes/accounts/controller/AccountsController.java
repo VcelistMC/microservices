@@ -1,6 +1,7 @@
 package com.eazybytes.accounts.controller;
 
 import com.eazybytes.accounts.consts.AccountConstants;
+import com.eazybytes.accounts.dto.AccountsContactInfoDTO;
 import com.eazybytes.accounts.dto.CustomerDTO;
 import com.eazybytes.accounts.dto.ErrorResponseDTO;
 import com.eazybytes.accounts.dto.ResponseDTO;
@@ -16,6 +17,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +33,20 @@ import org.springframework.web.bind.annotation.*;
 )
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Validated
 public class AccountsController {
 
     private IAccountService accountService;
+
+    @Value("${build.version}")
+    private String buildVersion;
+
+    @Autowired
+    private Environment environment;
+
+    @Autowired
+    private AccountsContactInfoDTO contactInfoDTO;
 
     @Operation(
             summary = "Create Account REST API",
@@ -139,5 +153,15 @@ public class AccountsController {
         else{
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseDTO(AccountConstants.STATUS_417, AccountConstants.MESSAGE_417_DELETE));
         }
+    }
+
+    @GetMapping("/version")
+    public ResponseEntity<String> version(){
+        return ResponseEntity.ok(buildVersion);
+    }
+
+    @GetMapping("/contact")
+    public ResponseEntity<AccountsContactInfoDTO> contact(){
+        return ResponseEntity.ok(contactInfoDTO);
     }
 }
