@@ -1,0 +1,8 @@
+loans:
+  message: "Welcome to EazyBank loans related local APIs "
+  contactDetails:
+    name: "Smitha Ray - QA Lead"
+    email: "john@eazybank.com"
+  onCallSupport:
+    - (555) 555-1234
+    - (555) 523-1345
