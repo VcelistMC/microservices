@@ -2,6 +2,7 @@ D:\Work\Programming\Backend Development\Springboot\Microservices course\loans\sr
 D:\Work\Programming\Backend Development\Springboot\Microservices course\loans\src\main\java\com\eazybytes\loans\constants\LoansConstants.java
 D:\Work\Programming\Backend Development\Springboot\Microservices course\loans\src\main\java\com\eazybytes\loans\controller\LoansController.java
 D:\Work\Programming\Backend Development\Springboot\Microservices course\loans\src\main\java\com\eazybytes\loans\dto\ErrorResponseDto.java
+D:\Work\Programming\Backend Development\Springboot\Microservices course\loans\src\main\java\com\eazybytes\loans\dto\LoansContactInfoDTO.java
 D:\Work\Programming\Backend Development\Springboot\Microservices course\loans\src\main\java\com\eazybytes\loans\dto\LoansDto.java
 D:\Work\Programming\Backend Development\Springboot\Microservices course\loans\src\main\java\com\eazybytes\loans\dto\ResponseDto.java
 D:\Work\Programming\Backend Development\Springboot\Microservices course\loans\src\main\java\com\eazybytes\loans\entity\BaseEntity.java
