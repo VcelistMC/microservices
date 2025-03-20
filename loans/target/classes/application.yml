@@ -17,6 +17,14 @@ spring:
       ddl-auto: update
     show-sql: true
 
-
+  profiles:
+    active:
+      - "qa"
   config:
     import: "configserver:http://localhost:8071"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

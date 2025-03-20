@@ -23,7 +23,11 @@ spring:
       - "qa"
   config:
     import: "configserver:http://localhost:8071"
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 build:
   version: "3.0"
 
