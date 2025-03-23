@@ -111,7 +111,7 @@ public class AccountServiceImpl implements IAccountService {
     private Account createNewAccount(Customer customer) {
         Account account = new Account();
         account.setCustomerId(customer.getCustomerId());
-        long randomAccNumber = ThreadLocalRandom.current().nextLong();
+        long randomAccNumber = ThreadLocalRandom.current().nextInt();
 
         account.setAccountNumber(randomAccNumber);
         account.setAccountType(AccountConstants.SAVINGS);

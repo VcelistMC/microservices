@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CardsController {
 
+    @Autowired
     private ICardService cardService;
 
     @Autowired
