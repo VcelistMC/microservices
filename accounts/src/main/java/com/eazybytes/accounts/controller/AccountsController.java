@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Tag(
@@ -164,8 +167,10 @@ public class AccountsController {
         return ResponseEntity.ok(buildVersion);
     }
 
+    @SneakyThrows
     @GetMapping("/contact")
     public ResponseEntity<AccountsContactInfoDTO> contact(){
+        TimeUnit.DAYS.sleep(1);
         return ResponseEntity.ok(contactInfoDTO);
     }
 }

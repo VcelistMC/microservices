@@ -1,4 +1,6 @@
 server:
+  servlet:
+    context-path: /
   port: 9000
 
 spring:
@@ -30,9 +32,9 @@ management:
       exposure:
         include: "*"
   health:
-    readinessstate:
-      enabled: true
     livenessstate:
+      enabled: true
+    readinessstate:
       enabled: true
   endpoint:
     shutdown:
