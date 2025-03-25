@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Eazy Bytes
@@ -178,8 +181,10 @@ public class LoansController {
         }
     }
 
+    @SneakyThrows
     @GetMapping("/contact")
     public ResponseEntity<LoansContactInfoDTO> contact(){
+        TimeUnit.DAYS.sleep(1);
         return ResponseEntity.ok(loansContactInfoDTO);
     }
 }
