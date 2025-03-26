@@ -9,6 +9,7 @@ import com.eazybytes.accounts.entity.Customer;
 import com.eazybytes.accounts.mapper.CustomerMapper;
 import com.eazybytes.accounts.service.IAccountService;
 import com.eazybytes.accounts.validators.MobileNumber;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -162,15 +163,18 @@ public class AccountsController {
         }
     }
 
+    @Retry(name = "version", fallbackMethod = "versionFallback")
     @GetMapping("/version")
     public ResponseEntity<String> version(){
-        return ResponseEntity.ok(buildVersion);
+       return ResponseEntity.ok(buildVersion);
     }
 
-    @SneakyThrows
+    public ResponseEntity<String> versionFallback(Throwable ex){
+        return ResponseEntity.ok("Issue Occured");
+    }
+
     @GetMapping("/contact")
     public ResponseEntity<AccountsContactInfoDTO> contact(){
-        TimeUnit.DAYS.sleep(1);
         return ResponseEntity.ok(contactInfoDTO);
     }
 }

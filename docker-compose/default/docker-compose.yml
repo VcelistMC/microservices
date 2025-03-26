@@ -19,17 +19,23 @@ services:
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
-    depends_on:
-      configserver:
-        condition: service_healthy
     healthcheck:
       test: curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 10s
+    depends_on:
+      configserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
-      SPRING_APPLICATION_NAME: "eurekaserver"
+      SPRING_APPLICATION_NAME: "gatewayserver"
+      SPRING_DATA_REDIS_CONNECT-TIMEOUT: 2s
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_TIMEOUT: 1s
     extends:
       file: common-config.yml
       service: microservice-configserver-config
@@ -121,6 +127,22 @@ services:
     extends:
       file: common-config.yml
       service: microservice-eureka-config
+#########################################################################
+  redis:
+    image: redis
+    container_name: eazyredis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
 
 networks:
   eazybank:
