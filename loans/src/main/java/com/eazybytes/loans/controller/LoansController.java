@@ -181,10 +181,8 @@ public class LoansController {
         }
     }
 
-    @SneakyThrows
     @GetMapping("/contact")
     public ResponseEntity<LoansContactInfoDTO> contact(){
-        TimeUnit.DAYS.sleep(1);
         return ResponseEntity.ok(loansContactInfoDTO);
     }
 }
