@@ -1,4 +1,19 @@
 services:
+  rabbit:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.7
     container_name: keycloak
@@ -61,8 +76,11 @@ services:
         condition: service_healthy
       eurekaserver:
         condition: service_healthy
+      rabbit:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "accounts"
+      SPRING_RABBITMQ_HOST: "rabbit"
     extends:
       file: common-config.yml
       service: microservice-eureka-config
@@ -133,10 +151,10 @@ services:
     extends:
       file: common-config.yml
       service: microservice-eureka-config
-#########################################################################
+########################################################################
 #  redis:
 #    image: redis
-#    container_name: eazyredis
+#    container_name: redis
 #    ports:
 #      - "6379:6379"
 #    healthcheck:
@@ -148,6 +166,19 @@ services:
 #    extends:
 #      file: common-config.yml
 #      service: network-deploy-service
+########################################################################
+  message:
+    image: peteratef/message
+    container_name: messageQ
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+    extends:
+      file: "common-config.yml"
+      service: network-deploy-service
+
 
 
 networks:

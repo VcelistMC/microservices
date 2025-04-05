@@ -2,6 +2,7 @@ package com.eazybytes.accounts.service.impl;
 
 import com.eazybytes.accounts.consts.AccountConstants;
 import com.eazybytes.accounts.dto.AccountDTO;
+import com.eazybytes.accounts.dto.AccountsMessageDTO;
 import com.eazybytes.accounts.dto.CustomerDTO;
 import com.eazybytes.accounts.entity.Account;
 import com.eazybytes.accounts.entity.Customer;
@@ -13,6 +14,9 @@ import com.eazybytes.accounts.repository.AccountRepository;
 import com.eazybytes.accounts.repository.CustomerRepository;
 import com.eazybytes.accounts.service.IAccountService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,9 +25,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 @AllArgsConstructor
 public class AccountServiceImpl implements IAccountService {
+    private final static Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     private AccountRepository accountRepository;
     private CustomerRepository customerRepository;
+    private final StreamBridge streamBridge;
 
     @Override
     public void createAccount(CustomerDTO customerDTO) {
@@ -38,7 +44,15 @@ public class AccountServiceImpl implements IAccountService {
         Customer savedCustomer = customerRepository.save(cusomter);
         Account account = createNewAccount(savedCustomer);
 
-        accountRepository.save(account);
+        Account savedAccount = accountRepository.save(account);
+
+        sendCommunication(savedAccount, savedCustomer);
+    }
+
+    private void sendCommunication(Account account, Customer customer){
+        var accountsMsgDTO = new AccountsMessageDTO(account.getAccountNumber(), customer.getName(), customer.getEmail(), customer.getMobileNumber());
+        var result = streamBridge.send("send-communication-out-0", accountsMsgDTO);
+        logger.info("Communication request sent with status: " + result);
     }
 
     @Override
